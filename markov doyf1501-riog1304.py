@@ -26,6 +26,32 @@ import os
 import glob
 import ntpath
 
+class objet_unigramme:
+    """Classe des objet du unigramme. Chaque objet sert à contenir un mot ainsi que sa fréquence utilisé.
+        - Contient le mot de l'objet pour faciliter la recherche
+        - Contient la fréquence de l'objet"""
+
+    def __init__(self, mot, frequence):
+        self.mot = mot
+        self.frequence = frequence
+        return
+    def __init__(self,mot):
+        self.mot = mot
+        self.frequence=0
+        return
+    def setFrequence(self, frequence):
+        self.frequence = frequence
+        return
+    def getFrequence(self):
+        return self.frequence
+    def getMot(self):
+        return self.mot
+    def augmenter(self):
+        self.frequence += 1
+        return
+
+claas
+
 class markov():
     """Classe Ã  utiliser pour coder la solution Ã  la problÃ©matique:
 
@@ -223,4 +249,6 @@ class markov():
         #   De cette faÃ§on, les mots d'un court poÃ¨me auraient une importance beaucoup plus grande que
         #   les mots d'une trÃ¨s longue oeuvre du mÃªme auteur. Ce n'est PAS ce qui vous est demandÃ© ici.
 
+
         return
+
