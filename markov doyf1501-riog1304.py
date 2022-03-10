@@ -27,6 +27,63 @@ import glob
 import ntpath
 import string
 import re
+
+class objet_unigramme:
+    """Classe des objet du unigramme. Chaque objet sert à contenir un mot ainsi que sa fréquence utilisé.
+        - Contient le mot de l'objet pour faciliter la recherche
+        - Contient la fréquence de l'objet"""
+
+    def __init__(self, mot, frequence):
+        self.mot = mot
+        self.frequence = frequence
+        return
+    def __init__(self,mot):
+        self.mot = mot
+        self.frequence=0
+        return
+    def setFrequence(self, frequence):
+        self.frequence = frequence
+        return
+    def getFrequence(self):
+        return self.frequence
+    def getMot(self):
+        return self.mot
+    def augmenter(self):
+        self.frequence += 1
+        return
+
+class objet_bigramme:
+    """Classe des objet du bigramme. Chaque objet sert à contenir un mot, le vecteur des mots qui peuvent le suivre et la fréquence du mot ainsi que chaqu'un des mots du vecteur.
+     - Contient le mot de l'objet pour faciliter la recherche
+     - Contient la fréquence de ce mot
+     - Contient le vecteur des mots qui peuvent le suivre
+     - Chaque mot du vecteur sont des objet objet_unigramme, contenant un mot et une fréquence"""
+
+    def __init__(self, mot):
+        self.mot = mot
+        self.frequence = 0
+        self.secondMot = {}
+        return
+    def __init__(self, mot, frequence, secondMot):
+        self.mot = mot
+        self.frequence = frequence
+        self.secondMot = secondMot
+        return
+    def ajouterMot(self, mot):
+        self.secondMot[mot]=objet_unigramme(mot,1)
+    def setFrequence(self, frequence):
+        self.frequence = frequence
+        return
+    def getFrequence(self):
+        return self.frequence
+    def setFrequence(self, mot, frequence):
+        self.secondMot[mot].setFrequence(frequence)
+        return
+    def getFrequence(self, mot):
+        return self.secondMot[mot].getFrequence()
+    def getSecondMot(self):
+        return self.secondMot
+
 class markov():
     """Classe Ã  utiliser pour coder la solution Ã  la problÃ©matique:
 
