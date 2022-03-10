@@ -25,7 +25,8 @@
 import os
 import glob
 import ntpath
-
+import string
+import re
 class markov():
     """Classe Ã  utiliser pour coder la solution Ã  la problÃ©matique:
 
@@ -201,6 +202,26 @@ class markov():
 
 
     def analyze(self):
+            #auteur 1 Balzac
+        self.set_aut_dir("TextesPourEtudiants")
+        listeTeste_balzac = self.get_aut_files("Balzac")
+        #print(listeTeste_balzac)
+        balzacTexte =open(listeTeste_balzac[1],'r')
+        lectureBalzac1 = balzacTexte.read().lower()
+        match_pattern= re.findall(r'\b[a-z]{3,200}\b',lectureBalzac1)
+        frequency={}
+        for word in match_pattern:
+            count = frequency.get(word, 0)
+            frequency[word] = count + 1
+
+
+        print(frequency.keys())
+
+
+
+
+
+
         """Fait l'analyse des textes fournis, en traitant chaque oeuvre de chaque auteur
 
         Args:
@@ -224,3 +245,8 @@ class markov():
         #   les mots d'une trÃ¨s longue oeuvre du mÃªme auteur. Ce n'est PAS ce qui vous est demandÃ© ici.
 
         return
+
+if __name__ == "__main__":
+
+    t= markov()
+    t.analyze()
