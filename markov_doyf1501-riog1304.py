@@ -274,13 +274,13 @@ class markov():
         return ngram
 
     def analyze(self):
-        liste = []
         self.set_aut_dir("TextesPourEtudiants")
+        liste = []
         for auteur in self.auteurs:
             frequency = {}
-            self.get_aut_files(self.auteurActuel)
-            for i in range(liste):
-                texte = open(liste[i], 'r')
+            listeOeuvres=self.get_aut_files(auteur)
+            for oeuvre in listeOeuvres:
+                texte = open(oeuvre, 'r')
                 lecture = texte.read().lower()
                 match_pattern = re.findall(r'\b[a-z]{3,50}\b', lecture)
                 frequency=extractionNGramme(self.ngram,match_pattern,frequency)
