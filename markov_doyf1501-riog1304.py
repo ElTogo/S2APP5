@@ -202,6 +202,7 @@ class markov():
         self.rep_aut = os.getcwd()
         self.auteurs = []
         self.ngram = 1
+        self.auteurActuel =""
 
         # Au besoin, ajouter votre code d'initialisation de l'objet de type markov lors de sa crÃ©ation
 
@@ -264,16 +265,30 @@ class markov():
         Returns:
             ngram (List[Liste[string]]) : Liste de liste de mots composant le n-gramme recherchÃ© (il est possible qu'il y ait plus d'un n-gramme au mÃªme rang)
         """
+
+        liste=self.analyze()
+
+
+
         ngram = [['un', 'roman']]   # Exemple du format de sortie d'un bigramme
         return ngram
 
+    def analyse(self):
+        liste = []
+        for auteur in self.auteurs:
+            frequency = {}
+            self.set_aut_dir("TextesPourEtudiants")
+            self.get_aut_files(self.auteurActuel)
+            for i in range(liste):
+                texte = open(liste[i], 'r')
+                lecture = texte.read().lower()
+                match_pattern = re.findall(r'\b[a-z]{3,50}\b', lecture)
+                frequency=extractionNGramme(self.ngram,match_pattern,frequency)
+            liste[auteur]=frequency
+        return liste
 
-    def analyze(self):
-
-
-
-
-
+    def TEMPanalyze(self):
+        n=3
 # auteur 2 Hugo
         frequency_mot_hugo = {}
         self.set_aut_dir("TextesPourEtudiants")
@@ -285,10 +300,7 @@ class markov():
 
             match_pattern = re.findall(r'\b[a-z]{3,50}\b', lectureHugo)
 
-            for word in match_pattern:
-                count = frequency_mot_hugo.get(word, 0)
-
-                frequency_mot_hugo[word] = count + 1
+            frequency_mot_hugo=extractionNGramme(self.ngram,match_pattern,frequency_mot_hugo)
 
         hugoTexte.close()
         #print(frequency_mot_hugo)
@@ -307,10 +319,7 @@ class markov():
 
             match_pattern = re.findall(r'\b[a-z]{3,50}\b', lecturVerne)
 
-            for word in match_pattern:
-                count = frequency_mot_verne.get(word, 0)
-
-                frequency_mot_verne[word] = count + 1
+            frequency_mot_verne=extractionNGramme(self.ngram,match_pattern,frequency_mot_verne)
 
         verneTexte.close()
         #print(frequency_mot_verne)
@@ -327,10 +336,7 @@ class markov():
 
             match_pattern = re.findall(r'\b[a-z]{3,50}\b', lecturVoltaire)
 
-            for word in match_pattern:
-                count = frequency_mot_voltaire.get(word, 0)
-
-                frequency_mot_voltaire[word] = count + 1
+            frequency_mot_voltaire=extractionNGramme(self.ngram,match_pattern,frequency_mot_voltaire)
 
         voltaireTexte.close()
         #print(frequency_mot_verne)
@@ -346,10 +352,7 @@ class markov():
 
             match_pattern = re.findall(r'\b[a-z]{3,50}\b', lecturZola)
 
-            for word in match_pattern:
-                count = frequency_mot_zola.get(word, 0)
-
-                frequency_mot_zola[word] = count + 1
+            frequency_mot_zola=extractionNGramme(self.ngram,match_pattern,frequency_mot_zola)
 
         zolaTexte.close()
         #print(frequency_mot_verne)
@@ -365,10 +368,7 @@ class markov():
 
             match_pattern = re.findall(r'\b[a-z]{3,50}\b', lecturSegur)
 
-            for word in match_pattern:
-                count = frequency_mot_segur.get(word, 0)
-
-                frequency_mot_segur[word] = count + 1
+            frequency_mot_segur = extractionNGramme(self.ngram,match_pattern, frequency_mot_segur)
 
         segurTexte.close()
         #print(frequency_mot_segur)
@@ -397,20 +397,30 @@ class markov():
         #   les mots d'une trÃ¨s longue oeuvre du mÃªme auteur. Ce n'est PAS ce qui vous est demandÃ© ici.
 
         return
-    def extractionNGramme
-    i+=1
-                key = word
-                for wordAfter in range(n-2):
-                    if i+wordAfter < match_pattern.__len__():
-                        key+=(" " + match_pattern[i+wordAfter])
-                if key not in frequency:
-                    frequency[key]=objet_ngramme(key)
-                if i+n-1 < match_pattern.__len__() :
-                    wordSuivant = match_pattern[i+n-1]
-                    frequency[key].ajouterMot(wordSuivant)
-
+def extractionNGramme(n,match_pattern,frequency):
+    if n == 1:
+        for word in match_pattern:
+            if frequency.get(word)==None:
+                frequency[word]=objet_unigramme(word)
+            else:
+                frequency[word].augmenter()
         for word in frequency:
-            frequency[word].afficher()
+            print(frequency[word].getResultat())
+    else:
+        i=0
+        for word in match_pattern:
+            i+=1
+            key = word
+            for wordAfter in range(n-2):
+                if i+wordAfter < match_pattern.__len__():
+                    key+=(" " + match_pattern[i+wordAfter])
+            if key not in frequency:
+                frequency[key]=objet_ngramme(key)
+            if i+n-1 < match_pattern.__len__() :
+                wordSuivant = match_pattern[i+n-1]
+                frequency[key].ajouterMot(wordSuivant)
+                frequency[key].afficher()
+    return frequency
 
 if __name__ == "__main__":
     
