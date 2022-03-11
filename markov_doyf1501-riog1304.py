@@ -299,7 +299,10 @@ class markov():
                 if i+n-1 < match_pattern.__len__() :
                     wordSuivant = match_pattern[i+n-1]
                     frequency[key].ajouterMot(wordSuivant)
-                    frequency[key].afficher()
+
+        for word in frequency:
+            frequency[word].afficher()
+
 
 
 
