@@ -273,11 +273,11 @@ class markov():
         ngram = [['un', 'roman']]   # Exemple du format de sortie d'un bigramme
         return ngram
 
-    def analyse(self):
+    def analyze(self):
         liste = []
+        self.set_aut_dir("TextesPourEtudiants")
         for auteur in self.auteurs:
             frequency = {}
-            self.set_aut_dir("TextesPourEtudiants")
             self.get_aut_files(self.auteurActuel)
             for i in range(liste):
                 texte = open(liste[i], 'r')
@@ -285,6 +285,7 @@ class markov():
                 match_pattern = re.findall(r'\b[a-z]{3,50}\b', lecture)
                 frequency=extractionNGramme(self.ngram,match_pattern,frequency)
             liste[auteur]=frequency
+            print("END")
         return liste
 
     def TEMPanalyze(self):
@@ -371,6 +372,7 @@ class markov():
             frequency_mot_segur = extractionNGramme(self.ngram,match_pattern, frequency_mot_segur)
 
         segurTexte.close()
+
         #print(frequency_mot_segur)
 
 
