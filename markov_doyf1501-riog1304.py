@@ -21,12 +21,13 @@
 
     Copyright 2018-2022, F. Mailhot et UniversitÃ© de Sherbrooke
 """
-
+import argparse
 import os
 import glob
 import ntpath
 import string
 import re
+import sys
 
 class objet_unigramme:
     """Classe des objet du unigramme. Chaque objet sert à contenir un mot ainsi que sa fréquence utilisé.
@@ -39,7 +40,7 @@ class objet_unigramme:
         return
     def __init__(self,mot):
         self.mot = mot
-        self.frequence=0
+        self.frequence=1
         return
     def setFrequence(self, frequence):
         self.frequence = frequence
@@ -51,8 +52,13 @@ class objet_unigramme:
     def augmenter(self):
         self.frequence += 1
         return
+    def getResultat(self):
+        return str("Le mot " + str(self.mot) + " revient " + str(self.frequence))
+    def afficher(self):
+        print(self.getResultat())
+        return
 
-class objet_bigramme:
+class objet_ngramme:
     """Classe des objet du bigramme. Chaque objet sert à contenir un mot, le vecteur des mots qui peuvent le suivre et la fréquence du mot ainsi que chaqu'un des mots du vecteur.
      - Contient le mot de l'objet pour faciliter la recherche
      - Contient la fréquence de ce mot
@@ -64,13 +70,13 @@ class objet_bigramme:
         self.frequence = 0
         self.secondMot = {}
         return
-    def __init__(self, mot, frequence, secondMot):
-        self.mot = mot
-        self.frequence = frequence
-        self.secondMot = secondMot
-        return
     def ajouterMot(self, mot):
-        self.secondMot[mot]=objet_unigramme(mot,1)
+        if self.secondMot.get(mot) == None:
+            self.secondMot[mot] = objet_unigramme(mot)
+        else:
+            self.secondMot[mot].augmenter()
+        self.frequence+=1
+        return
     def setFrequence(self, frequence):
         self.frequence = frequence
         return
@@ -83,6 +89,9 @@ class objet_bigramme:
         return self.secondMot[mot].getFrequence()
     def getSecondMot(self):
         return self.secondMot
+    def afficher(self):
+        print("Le mot " + self.mot + " reveint " + str(self.frequence) + " et précede " + str(self.secondMot.__len__()))
+        return
 
 class markov():
     """Classe Ã  utiliser pour coder la solution Ã  la problÃ©matique:
@@ -259,7 +268,8 @@ class markov():
 
 
     def analyze(self):
-            #auteur 1 Balzac
+        n=3
+        #auteur 1 Balzac
         self.set_aut_dir("TextesPourEtudiants")
         listeTeste_balzac = self.get_aut_files("Balzac")
         #print(listeTeste_balzac)
@@ -267,12 +277,34 @@ class markov():
         lectureBalzac1 = balzacTexte.read().lower()
         match_pattern= re.findall(r'\b[a-z]{3,200}\b',lectureBalzac1)
         frequency={}
-        for word in match_pattern:
-            count = frequency.get(word, 0)
-            frequency[word] = count + 1
+
+        if n == 1:
+            for word in match_pattern:
+                if frequency.get(word)==None:
+                    frequency[word]=objet_unigramme(word)
+                else:
+                    frequency[word].augmenter()
+            for word in frequency:
+                print(frequency[word].getResultat())
+        else:
+            i=0
+            for word in match_pattern:
+                i+=1
+                key = word
+                for wordAfter in range(n-2):
+                    if i+wordAfter < match_pattern.__len__():
+                        key+=(" " + match_pattern[i+wordAfter])
+                if key not in frequency:
+                    frequency[key]=objet_ngramme(key)
+                if i+n-1 < match_pattern.__len__() :
+                    wordSuivant = match_pattern[i+n-1]
+                    frequency[key].ajouterMot(wordSuivant)
+                    frequency[key].afficher()
 
 
-        print(frequency.keys())
+
+
+
 
 
 
@@ -304,6 +336,6 @@ class markov():
         return
 
 if __name__ == "__main__":
-
+    
     t= markov()
     t.analyze()
