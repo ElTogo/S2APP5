@@ -1,3 +1,4 @@
+
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
@@ -109,7 +110,7 @@ class markov():
 
     # Le code qui suit est fourni pour vous faciliter la vie.  Il n'a pas Ã  Ãªtre modifiÃ©
     # Signes de ponctuation Ã  retirer (complÃ©ter la liste qui ne comprend que "!" et "," au dÃ©part)
-    PONC = ["!",","]
+    PONC = ["!",",",".","'","\"",]
 
     def set_ponc(self, value):
         """DÃ©termine si les signes de ponctuation sont conservÃ©s (True) ou Ã©liminÃ©s (False)
@@ -268,50 +269,109 @@ class markov():
 
 
     def analyze(self):
-        n=3
-        #auteur 1 Balzac
+
+
+
+
+
+# auteur 2 Hugo
+        frequency_mot_hugo = {}
         self.set_aut_dir("TextesPourEtudiants")
-        listeTeste_balzac = self.get_aut_files("Balzac")
-        #print(listeTeste_balzac)
-        balzacTexte =open(listeTeste_balzac[1],'r')
-        lectureBalzac1 = balzacTexte.read().lower()
-        match_pattern= re.findall(r'\b[a-z]{3,200}\b',lectureBalzac1)
-        frequency={}
+        listeTeste_hugo = self.get_aut_files("Hugo")
 
-        if n == 1:
+        for i in range(1):
+            hugoTexte = open(listeTeste_hugo[1], 'r')
+            lectureHugo = hugoTexte.read().lower()
+
+            match_pattern = re.findall(r'\b[a-z]{3,50}\b', lectureHugo)
+
             for word in match_pattern:
-                if frequency.get(word)==None:
-                    frequency[word]=objet_unigramme(word)
-                else:
-                    frequency[word].augmenter()
-            for word in frequency:
-                print(frequency[word].getResultat())
-        else:
-            i=0
+                count = frequency_mot_hugo.get(word, 0)
+
+                frequency_mot_hugo[word] = count + 1
+
+        hugoTexte.close()
+        #print(frequency_mot_hugo)
+
+
+
+
+# auteur 4 Verne
+        frequency_mot_verne = {}
+        self.set_aut_dir("TextesPourEtudiants")
+        listeTeste_verne = self.get_aut_files("Verne")
+
+        for i in range(1):
+            verneTexte = open(listeTeste_verne[1], 'r')
+            lecturVerne = verneTexte.read().lower()
+
+            match_pattern = re.findall(r'\b[a-z]{3,50}\b', lecturVerne)
+
             for word in match_pattern:
-                i+=1
-                key = word
-                for wordAfter in range(n-2):
-                    if i+wordAfter < match_pattern.__len__():
-                        key+=(" " + match_pattern[i+wordAfter])
-                if key not in frequency:
-                    frequency[key]=objet_ngramme(key)
-                if i+n-1 < match_pattern.__len__() :
-                    wordSuivant = match_pattern[i+n-1]
-                    frequency[key].ajouterMot(wordSuivant)
+                count = frequency_mot_verne.get(word, 0)
 
-        for word in frequency:
-            frequency[word].afficher()
+                frequency_mot_verne[word] = count + 1
+
+        verneTexte.close()
+        #print(frequency_mot_verne)
 
 
+# auteur 5 Voltaire
+        frequency_mot_voltaire = {}
+        self.set_aut_dir("TextesPourEtudiants")
+        listeTeste_voltaire = self.get_aut_files("Voltaire")
 
+        for i in range(1):
+            voltaireTexte = open(listeTeste_voltaire[1], 'r')
+            lecturVoltaire = voltaireTexte.read().lower()
 
+            match_pattern = re.findall(r'\b[a-z]{3,50}\b', lecturVoltaire)
 
+            for word in match_pattern:
+                count = frequency_mot_voltaire.get(word, 0)
 
+                frequency_mot_voltaire[word] = count + 1
 
+        voltaireTexte.close()
+        #print(frequency_mot_verne)
 
+# auteur 6 Zola
+        frequency_mot_zola = {}
+        self.set_aut_dir("TextesPourEtudiants")
+        listeTeste_zola = self.get_aut_files("Zola")
 
+        for i in range(1):
+            zolaTexte = open(listeTeste_zola[1], 'r')
+            lecturZola = zolaTexte.read().lower()
 
+            match_pattern = re.findall(r'\b[a-z]{3,50}\b', lecturZola)
+
+            for word in match_pattern:
+                count = frequency_mot_zola.get(word, 0)
+
+                frequency_mot_zola[word] = count + 1
+
+        zolaTexte.close()
+        #print(frequency_mot_verne)
+
+# auteur 6 Segur
+        frequency_mot_segur = {}
+        self.set_aut_dir("TextesPourEtudiants")
+        listeTeste_segur = self.get_aut_files("Segur")
+
+        for i in range(4):
+            segurTexte = open(listeTeste_segur[0], 'r')
+            lecturSegur = segurTexte.read().lower()
+
+            match_pattern = re.findall(r'\b[a-z]{3,50}\b', lecturSegur)
+
+            for word in match_pattern:
+                count = frequency_mot_segur.get(word, 0)
+
+                frequency_mot_segur[word] = count + 1
+
+        segurTexte.close()
+        #print(frequency_mot_segur)
 
 
         """Fait l'analyse des textes fournis, en traitant chaque oeuvre de chaque auteur
@@ -337,6 +397,20 @@ class markov():
         #   les mots d'une trÃ¨s longue oeuvre du mÃªme auteur. Ce n'est PAS ce qui vous est demandÃ© ici.
 
         return
+    def extractionNGramme
+    i+=1
+                key = word
+                for wordAfter in range(n-2):
+                    if i+wordAfter < match_pattern.__len__():
+                        key+=(" " + match_pattern[i+wordAfter])
+                if key not in frequency:
+                    frequency[key]=objet_ngramme(key)
+                if i+n-1 < match_pattern.__len__() :
+                    wordSuivant = match_pattern[i+n-1]
+                    frequency[key].ajouterMot(wordSuivant)
+
+        for word in frequency:
+            frequency[word].afficher()
 
 if __name__ == "__main__":
     
