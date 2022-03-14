@@ -87,18 +87,43 @@ class objet_ngramme:
     def setFrequence(self, mot, frequence):
         self.secondMot[mot].setFrequence(frequence)
         return
-    def getFrequence(self, mot):
-        return self.secondMot[mot].getFrequence()
+    """def getFrequence(self, mot):
+        return self.secondMot[mot].getFrequence()"""
     def getSecondMot(self):
         return self.secondMot
     def afficher(self):
         print("Le mot " + self.mot + " reveint " + str(self.frequence) + " et précede " + str(self.secondMot.__len__()))
         return
-    def quicksort(self, start, end):
+    def startQuicksort(self):
+        liste = []
+        for mot in self.secondMot:
+            liste.append(self.secondMot[mot])
+        self.quicksort(liste, 0, len(liste)-1)
+        for i in range(int(len(liste)/2)):
+            liste[i],liste[len(liste)-(i+1)]=(liste[len(liste)-(i+1)],liste[i])
+        return liste
+    def quicksort(self, liste, start, end):
         if start < end:
-            split = markov.split(secondMot, start, end)
-            self.quicksort(start,split-1)
-            self.quicksort(split+1, end)
+            split = self.split(liste,start, end)
+            self.quicksort(liste,start,split-1)
+            self.quicksort(liste,split+1, end)
+        return
+    def split(self, liste, start, end):
+        pivot = liste[start].getFrequence()
+        left = start + 1
+        right = end
+        done = False
+        while not done:
+            while left <= right and liste[left].getFrequence() <= pivot:
+                left += 1
+            while right >= left and liste[right].getFrequence() >= pivot:
+                right -= 1
+            if right < left:
+                done = True
+            else:
+                liste[left], liste[right] = (liste[right], liste[left])
+        liste[start], liste[right] = (liste[right], liste[start])
+        return right
         return
 
 class markov():
@@ -331,9 +356,6 @@ class markov():
             return right
 
     def quicksort(self, liste, start, end):
-        if self.ngram > 1:
-            for i in range(len(liste)):
-                liste[i].quicksort(0, len(liste[i].getSecondMot())-1)
         if start < end:
             split = self.split(liste, start, end)
             self.quicksort(liste, start,split-1)
@@ -359,7 +381,10 @@ class markov():
         self.quicksort(listeTriage,0,len(listeTriage)-1)
         for j in range(int(len(listeTriage)/2)):
             listeTriage[j], listeTriage[len(listeTriage)-(j+1)]=(listeTriage[len(listeTriage)-(j+1)],listeTriage[j])
-        ngram = listeTriage[n]
+        ngram=[]
+        ngram.append(listeTriage[n])
+        if self.ngram>1:
+            ngram.append(listeTriage[n].startQuicksort())
         return ngram
 
     def analyze(self):
@@ -373,7 +398,6 @@ class markov():
                 match_pattern = re.findall(r'\b[a-z]{3,50}\b', lecture)
                 frequency=extractionNGramme(self.ngram,match_pattern,frequency)
             self.liste[auteur]=frequency
-            print("END")
 
     def TEMPanalyze(self):
         n=self.ngram
@@ -493,10 +517,6 @@ def extractionNGramme(n,match_pattern,frequency):
                 frequency[word]=objet_unigramme(word)
             else:
                 frequency[word].augmenter()
-
-        for word in frequency:
-            pass
-            #print(frequency[word].getResultat())
     else:
         i=0
         for word in match_pattern:
@@ -510,14 +530,21 @@ def extractionNGramme(n,match_pattern,frequency):
             if i+n-1 < match_pattern.__len__() :
                 wordSuivant = match_pattern[i+n-1]
                 frequency[key].ajouterMot(wordSuivant)
-                #frequency[key].afficher()
     return frequency
 
 if __name__ == "__main__":
     
     t= markov()
-    #t.ngram=1
-    #t.TEMPanalyze()
-    t.find_author("Hugo_généré.txt")
-    #t.get_nth_element("Hugo",0)
+    t.TEMPanalyze()
+    t.find_author("Hugo_généré.txt")à
+    t.ngram=2
+    t.TEMPanalyze()
+    temp = (t.get_nth_element("Hugo",0))
+    """temp[0].afficher()
+    somme = 0
+    for i in range(len(temp[1])):
+        temp[1][i].afficher()
+        somme+=temp[1][i].getFrequence()"""
+
+
 
