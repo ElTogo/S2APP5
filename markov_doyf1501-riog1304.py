@@ -82,13 +82,20 @@ class objet_ngramme:
     def setFrequence(self, frequence):
         self.frequence = frequence
         return
+
+
     def getFrequence(self):
         return self.frequence
+
+
     def setFrequence(self, mot, frequence):
         self.secondMot[mot].setFrequence(frequence)
         return
-    """def getFrequence(self, mot):
-        return self.secondMot[mot].getFrequence()"""
+
+
+    def getFrequence(self, mot):
+        return self.secondMot[mot].getFrequence()
+
     def getSecondMot(self):
         return self.secondMot
     def afficher(self):
@@ -535,11 +542,11 @@ def extractionNGramme(n,match_pattern,frequency):
 if __name__ == "__main__":
     
     t= markov()
-    t.TEMPanalyze()
-    t.find_author("Hugo_généré.txt")à
-    t.ngram=2
-    t.TEMPanalyze()
-    temp = (t.get_nth_element("Hugo",0))
+
+    t.find_author("Hugo_généré.txt")
+   
+
+
     """temp[0].afficher()
     somme = 0
     for i in range(len(temp[1])):
