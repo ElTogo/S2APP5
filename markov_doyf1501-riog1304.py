@@ -29,6 +29,7 @@ import ntpath
 import string
 import re
 import sys
+import math
 
 class objet_unigramme:
     """Classe des objet du unigramme. Chaque objet sert à contenir un mot ainsi que sa fréquence utilisé.
@@ -204,7 +205,7 @@ class markov():
         """
 
         # Initialisation des champs nÃ©cessaires aux fonctions fournies
-        self.keep_ponc = True
+        self.keep_ponc = False
         self.rep_aut = os.getcwd()
         self.auteurs = []
         self.ngram = 1
@@ -223,15 +224,66 @@ class markov():
     # Ensuite, selon ce qui est demandÃ©, les fonctions find_author(), gen_text() ou get_nth_element() sont appelÃ©es
 
     def find_author(self, oeuvre):
-        """AprÃ¨s analyse des textes d'auteurs connus, retourner la liste d'auteurs
-            et le niveau de proximitÃ© (un nombre entre 0 et 1) de l'oeuvre inconnue avec les Ã©crits de chacun d'entre eux
+        #étape 1, ouvrir et lire le fichier inconu (string oeuvre)
+        #self.set_aut_dir("TextesPourAutoValidation")
+        frequence_inconnu = {}
+        texteInconnu = open(oeuvre, 'r')
+        lecturInconnu = texteInconnu.read().lower()
 
-        Args:
-            oeuvre (string): Nom du fichier contenant l'oeuvre d'un auteur inconnu
+        match_pattern = re.findall(r'\b[a-z]{3,50}\b', lecturInconnu)
 
-        Returns:
-            resultats (Liste[(string,float)]) : Liste de tuples (auteurs, niveau de proximitÃ©), oÃ¹ la proximitÃ© est un nombre entre 0 et 1)
-        """
+        frequence_inconnu=extractionNGramme(self.ngram,match_pattern,frequence_inconnu)
+        texteInconnu.close()
+        #2 convertir l'objet en nombre ({mot: frq}
+
+
+        for word in frequence_inconnu:
+            frequence_inconnu[word]= frequence_inconnu[word].getFrequence()
+
+        print(frequence_inconnu)
+
+        #On lit tous les textes de tous les auteurs, on en fait des dict dans une liste
+        self.analyze()
+        #on change les objets pour les freq de chaque mot
+        for auteur in self.auteurs:
+            for word in self.liste[auteur]:
+                self.liste[auteur][word] = self.liste[auteur][word].getFrequence()
+
+        #Calculs, on commence par calculer la taille des deux vecteurs
+
+        tailleAuteur = 0
+        tailleInconnu =0
+
+
+        sommeInconnu = 0
+        sommeAuteur = 0
+        produitScalaire = 0
+
+        for word in frequence_inconnu:
+            sommeInconnu += (frequence_inconnu[word])*(frequence_inconnu[word])
+
+        tailleInconnu = math.sqrt(sommeInconnu)
+
+        for auteur in self.auteurs:
+            for word in self.liste[auteur]:
+                if word in self.liste[auteur] and word in frequence_inconnu:
+                    sommeAuteur += (self.liste[auteur][word]) * (frequence_inconnu[word])
+                    produitScalaire += self.liste[auteur][word] * frequence_inconnu[word]
+                else:
+                    sommeAuteur+= 0
+                    produitScalaire+=0
+            tailleAuteur = math.sqrt(sommeAuteur)
+            indiceRessemblance =  produitScalaire/(tailleAuteur*tailleInconnu)
+            print(auteur,"-->",indiceRessemblance)
+
+
+
+
+
+
+
+
+
 
         resultats = [("balzac", 0.1234), ("voltaire", 0.1123)]   # Exemple du format des sorties
 
@@ -316,7 +368,7 @@ class markov():
             frequency = {}
             listeOeuvres=self.get_aut_files(auteur)
             for oeuvre in listeOeuvres:
-                texte = open(oeuvre, 'r')
+                texte = open(oeuvre, 'r', encoding='utf8')
                 lecture = texte.read().lower()
                 match_pattern = re.findall(r'\b[a-z]{3,50}\b', lecture)
                 frequency=extractionNGramme(self.ngram,match_pattern,frequency)
@@ -346,7 +398,7 @@ class markov():
 
 # auteur 4 Verne
         self.liste["Verne"] = {}
-        self.set_aut_dir("TextesPourEtudiants")
+        #self.set_aut_dir("TextesPourEtudiants")
         listeTeste_verne = self.get_aut_files("Verne")
 
         for i in range(1):
@@ -363,7 +415,7 @@ class markov():
 
 # auteur 5 Voltaire
         self.liste["Voltaire"] = {}
-        self.set_aut_dir("TextesPourEtudiants")
+        #self.set_aut_dir("TextesPourEtudiants")
         listeTeste_voltaire = self.get_aut_files("Voltaire")
 
         for i in range(1):
@@ -379,7 +431,7 @@ class markov():
 
 # auteur 6 Zola
         self.liste["Zola"] = {}
-        self.set_aut_dir("TextesPourEtudiants")
+        #self.set_aut_dir("TextesPourEtudiants")
         listeTeste_zola = self.get_aut_files("Zola")
 
         for i in range(1):
@@ -395,7 +447,7 @@ class markov():
 
 # auteur 6 Segur
         self.liste["Segur"] = {}
-        self.set_aut_dir("TextesPourEtudiants")
+        #self.set_aut_dir("TextesPourEtudiants")
         listeTeste_segur = self.get_aut_files("Ségur")
 
         for i in range(1):
@@ -441,8 +493,10 @@ def extractionNGramme(n,match_pattern,frequency):
                 frequency[word]=objet_unigramme(word)
             else:
                 frequency[word].augmenter()
+
         for word in frequency:
-            print(frequency[word].getResultat())
+            pass
+            #print(frequency[word].getResultat())
     else:
         i=0
         for word in match_pattern:
@@ -456,13 +510,14 @@ def extractionNGramme(n,match_pattern,frequency):
             if i+n-1 < match_pattern.__len__() :
                 wordSuivant = match_pattern[i+n-1]
                 frequency[key].ajouterMot(wordSuivant)
-                frequency[key].afficher()
+                #frequency[key].afficher()
     return frequency
 
 if __name__ == "__main__":
     
     t= markov()
-    t.ngram=1
-    t.TEMPanalyze()
-    t.get_nth_element("Hugo",0)
+    #t.ngram=1
+    #t.TEMPanalyze()
+    t.find_author("Hugo_généré.txt")
+    #t.get_nth_element("Hugo",0)
 
