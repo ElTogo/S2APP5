@@ -1,5 +1,4 @@
-
-#!/usr/bin/env python3
+# !/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 
@@ -32,6 +31,7 @@ import sys
 import math
 import random
 
+
 class objet_unigramme:
     """Classe des objet du unigramme. Chaque objet sert à contenir un mot ainsi que sa fréquence utilisé.
         - Contient le mot de l'objet pour faciliter la recherche
@@ -41,25 +41,33 @@ class objet_unigramme:
         self.mot = mot
         self.frequence = frequence
         return
-    def __init__(self,mot):
+
+    def __init__(self, mot):
         self.mot = mot
-        self.frequence=1
+        self.frequence = 1
         return
+
     def setFrequence(self, frequence):
         self.frequence = frequence
         return
+
     def getFrequence(self):
         return self.frequence
+
     def getMot(self):
         return self.mot
+
     def augmenter(self):
         self.frequence += 1
         return
+
     def getResultat(self):
         return str("Le mot " + str(self.mot) + " revient " + str(self.frequence))
+
     def afficher(self):
         print(self.getResultat())
         return
+
 
 class objet_ngramme:
     """Classe des objet du bigramme. Chaque objet sert à contenir un mot, le vecteur des mots qui peuvent le suivre et la fréquence du mot ainsi que chaqu'un des mots du vecteur.
@@ -73,58 +81,71 @@ class objet_ngramme:
         self.frequence = 0
         self.secondMot = {}
         return
+
     def ajouterMot(self, mot):
         if self.secondMot.get(mot) == None:
             self.secondMot[mot] = objet_unigramme(mot)
         else:
             self.secondMot[mot].augmenter()
-        self.frequence+=1
+        self.frequence += 1
         return
+
     def setFrequence(self, frequence):
         self.frequence = frequence
         return
 
-
     def getFrequence(self):
         return self.frequence
-
 
     def setFrequence(self, mot, frequence):
         self.secondMot[mot].setFrequence(frequence)
         return
+
+    def get2Gramme(self):
+        return self.mot
+
     def getSecondMot(self):
         return self.secondMot
+
     def afficher(self):
-        print("Le mot " + self.mot + " reveint " + str(self.frequence) + " et précede " + str(self.secondMot.__len__()))
+
+        print("Les mots " + self.mot + " " + self.secondMot[second].getMot() + " reviennent " + self.secondMot[
+            second].getFrequence())
+
+    def startQuicksort(self):
+        liste = []
+        for mot in self.secondMot:
+            liste.append(self.secondMot[mot])
+        self.quicksort(liste, 0, len(liste) - 1)
+        for i in range(int(len(liste) / 2)):
+            liste[i], liste[len(liste) - (i + 1)] = (liste[len(liste) - (i + 1)], liste[i])
+        return liste
+
+    def quicksort(self, liste, start, end):
+        if start < end:
+            split = self.split(liste, start, end)
+            self.quicksort(liste, start, split - 1)
+            self.quicksort(liste, split + 1, end)
         return
-    def mergesort(self, list):
-        if len(list) > 1:
-            mid = len(list) // 2
-            left_half = list[:mid]
-            right_half = list[mid:]
 
-            self.mergesort(left_half)
-            self.mergesort(right_half)
+    def split(self, liste, start, end):
+        pivot = liste[start].getFrequence()
+        left = start + 1
+        right = end
+        done = False
+        while not done:
+            while left <= right and liste[left].getFrequence() <= pivot:
+                left += 1
+            while right >= left and liste[right].getFrequence() >= pivot:
+                right -= 1
+            if right < left:
+                done = True
+            else:
+                liste[left], liste[right] = (liste[right], liste[left])
+        liste[start], liste[right] = (liste[right], liste[start])
+        return right
+        return
 
-            i, j, k = 0, 0, 0
-            while i < len(left_half) and j < len(right_half):
-                if left_half[i].getFrequence() <= right_half[j].getFrequence():
-                    list[k] = left_half[i]
-                    i = i + 1
-                else:
-                    list[k] = right_half[j]
-                    j = j + 1
-                k = k + 1
-
-            while i < len(left_half):
-                list[k] = left_half[i]
-                i = i + 1
-                k = k + 1
-
-            while j < len(right_half):
-                list[k] = right_half[j]
-                j = j + 1
-                k = k + 1
 
 class markov():
     """Classe Ã  utiliser pour coder la solution Ã  la problÃ©matique:
@@ -142,7 +163,7 @@ class markov():
 
     # Le code qui suit est fourni pour vous faciliter la vie.  Il n'a pas Ã  Ãªtre modifiÃ©
     # Signes de ponctuation Ã  retirer (complÃ©ter la liste qui ne comprend que "!" et "," au dÃ©part)
-    PONC = ["!",",",".","'","\"",]
+    PONC = ["!", ",", ".", "'", "\"", ]
 
     def set_ponc(self, value):
         """DÃ©termine si les signes de ponctuation sont conservÃ©s (True) ou Ã©liminÃ©s (False)
@@ -207,7 +228,6 @@ class markov():
         self.set_auteurs()
         return
 
-
     def set_ngram(self, ngram):
         """Indique que l'analyse et la gÃ©nÃ©ration de texte se fera avec des n-grammes de taille ngram
 
@@ -249,43 +269,41 @@ class markov():
     # Ensuite, selon ce qui est demandÃ©, les fonctions find_author(), gen_text() ou get_nth_element() sont appelÃ©es
 
     def find_author(self, oeuvre):
-        #étape 1, ouvrir et lire le fichier inconu (string oeuvre)
-        #self.set_aut_dir("TextesPourAutoValidation")
+        # étape 1, ouvrir et lire le fichier inconu (string oeuvre)
+        # self.set_aut_dir("TextesPourAutoValidation")
         frequence_inconnu = {}
         texteInconnu = open(oeuvre, 'r')
         lecturInconnu = texteInconnu.read().lower()
 
         match_pattern = re.findall(r'\b[a-z]{3,50}\b', lecturInconnu)
 
-        frequence_inconnu=extractionNGramme(self.ngram,match_pattern,frequence_inconnu)
+        frequence_inconnu = extractionNGramme(self.ngram, match_pattern, frequence_inconnu)
         texteInconnu.close()
-        #2 convertir l'objet en nombre ({mot: frq}
-
+        # 2 convertir l'objet en nombre ({mot: frq}
 
         for word in frequence_inconnu:
-            frequence_inconnu[word]= frequence_inconnu[word].getFrequence()
+            frequence_inconnu[word] = frequence_inconnu[word].getFrequence()
 
         print(frequence_inconnu)
 
-        #On lit tous les textes de tous les auteurs, on en fait des dict dans une liste
+        # On lit tous les textes de tous les auteurs, on en fait des dict dans une liste
         self.analyze()
-        #on change les objets pour les freq de chaque mot
+        # on change les objets pour les freq de chaque mot
         for auteur in self.auteurs:
             for word in self.liste[auteur]:
                 self.liste[auteur][word] = self.liste[auteur][word].getFrequence()
 
-        #Calculs, on commence par calculer la taille des deux vecteurs
+        # Calculs, on commence par calculer la taille des deux vecteurs
 
         tailleAuteur = 0
-        tailleInconnu =0
-
+        tailleInconnu = 0
 
         sommeInconnu = 0
         sommeAuteur = 0
         produitScalaire = 0
 
         for word in frequence_inconnu:
-            sommeInconnu += (frequence_inconnu[word])*(frequence_inconnu[word])
+            sommeInconnu += (frequence_inconnu[word]) * (frequence_inconnu[word])
 
         tailleInconnu = math.sqrt(sommeInconnu)
 
@@ -295,23 +313,14 @@ class markov():
                     sommeAuteur += (self.liste[auteur][word]) * (self.liste[auteur][word])
                     produitScalaire += self.liste[auteur][word] * frequence_inconnu[word]
                 else:
-                    sommeAuteur+= 0
-                    produitScalaire+=0
+                    sommeAuteur += 0
+                    produitScalaire += 0
             tailleAuteur = math.sqrt(sommeAuteur)
-            indiceRessemblance =  produitScalaire/(tailleAuteur*tailleInconnu)
-            print(auteur,"-->",indiceRessemblance)
+            indiceRessemblance = produitScalaire / (tailleAuteur * tailleInconnu)
+            # resultats = [(auteur, indiceRessemblance)]
+            print(auteur, "-->", indiceRessemblance)
 
-
-
-
-
-
-
-
-
-
-        resultats = [("balzac", 0.1234), ("voltaire", 0.1123)]   # Exemple du format des sorties
-
+        resultats = [("balzac", 0.1234), ("voltaire", 0.1123)]  # Exemple du format des sorties
 
         # Ajouter votre code pour dÃ©terminer la proximitÃ© du fichier passÃ© en paramÃ¨tre avec chacun des auteurs
         # Retourner la liste des auteurs, chacun avec sa proximitÃ© au fichier inconnu
@@ -326,10 +335,9 @@ class markov():
 
     def gen_text(self, auteur, taille, textname):
         self.analyze()
-        print("--------------jhg------")
 
-        if self.ngram ==1:
-            i =0
+        if self.ngram == 1:
+            i = 0
             listeMot = []
             listePoids = []
 
@@ -337,54 +345,54 @@ class markov():
                 self.liste[auteur][word].aficher()
                 self.liste[auteur][word] = self.liste[auteur][word].getFrequence()
 
-
-            #print(self.liste["Hugo"])
+            # print(self.liste["Hugo"])
 
             listeMot = list(self.liste[auteur].keys())
 
             listePoids = list(self.liste[auteur].values())
 
+            textGen = open(textname, 'w')
 
-            textGen = open(textname,'w')
-
-
-
-            randomizer= (random.choices(listeMot,listePoids,k=taille))
+            randomizer = (random.choices(listeMot, listePoids, k=taille))
 
             for word in randomizer:
                 textGen.write(word)
                 textGen.write(" ")
 
             textGen.close()
+
         if self.ngram > 1:
             self.analyze()
+            listeTemp = {}
             listDesMots = []
             listPoids = []
             for ngram in self.liste[auteur]:
-                self.liste[auteur][ngram] = self.liste[auteur][ngram].getFrequence()
-            listDesMots = list(self.liste[auteur].keys())
-            listPoids = list(self.liste[auteur].values())
+                listeTemp[ngram] = self.liste[auteur][ngram].getFrequence()
+            listDesMots = list(listeTemp.keys())
+            listPoids = list(listeTemp.values())
 
-            premierMot = random.choices(listDesMots,listPoids,k=1)
-            mot= str(premierMot)
-            text_Gen = open(textname,'w')
+            premierMot = random.choices(listDesMots, listPoids, k=1)
+            mot = str(premierMot[0])
+            text_Gen = open(textname, 'w')
+            text_Gen.write(mot)
+            text_Gen.write(" ")
+            print(mot)
+            listTemp2 = {}
+            prochainsMots = self.liste[auteur][mot].getSecondMot()
+            for i in range(taille - 1):
+                for ngram in prochainsMots:
+                    listTemp2[ngram] = prochainsMots[ngram].getFrequence()
 
-            for word in self.liste[auteur]:
-                secondMot= random.choices(list(self.liste[auteur][word][ngram].getSecondMot(mot)))
+                j = list(prochainsMots.keys())
+                s = list(listTemp2.values())
 
+                prochainMot = (random.choices(j, s, k=1))
 
+                print(str(prochainMot[0]))
+                text_Gen.write(str(prochainMot[0]))
 
-
-
-
-
-
-
-
-
-
-
-
+                prochainsMots = self.liste[auteur][prochainsMots[prochainMot[0]].getMot()].getSecondMot()
+            print(prochainMot)
 
         """AprÃ¨s analyse des textes d'auteurs connus, produire un texte selon des statistiques d'un auteur
 
@@ -399,34 +407,29 @@ class markov():
 
         return
 
-    def mergesort(self, list):
-        if len(list) > 1:
-            mid = len(list) // 2
-            left_half = list[:mid]
-            right_half = list[mid:]
+    def split(self, liste, start, end):
+        pivot = liste[start].getFrequence()
+        left = start + 1
+        right = end
+        done = False
+        while not done:
+            while left <= right and liste[left].getFrequence() <= pivot:
+                left += 1
+            while right >= left and liste[right].getFrequence() >= pivot:
+                right -= 1
+            if right < left:
+                done = True
+            else:
+                liste[left], liste[right] = (liste[right], liste[left])
+        liste[start], liste[right] = (liste[right], liste[start])
+        return right
 
-            self.mergesort(left_half)
-            self.mergesort(right_half)
-
-            i, j, k = 0, 0, 0
-            while i < len(left_half) and j < len(right_half):
-                if left_half[i].getFrequence() <= right_half[j].getFrequence():
-                    list[k] = left_half[i]
-                    i = i + 1
-                else:
-                    list[k] = right_half[j]
-                    j = j + 1
-                k = k + 1
-
-            while i < len(left_half):
-                list[k] = left_half[i]
-                i = i + 1
-                k = k + 1
-
-            while j < len(right_half):
-                list[k] = right_half[j]
-                j = j + 1
-                k = k + 1
+    def quicksort(self, liste, start, end):
+        if start < end:
+            split = self.split(liste, start, end)
+            self.quicksort(liste, start, split - 1)
+            self.quicksort(liste, split + 1, end)
+        return
 
     def get_nth_element(self, auteur, n):
         """AprÃ¨s analyse des textes d'auteurs connus, retourner le n-iÃ¨me plus frÃ©quent n-gramme de l'auteur indiquÃ©
@@ -442,27 +445,29 @@ class markov():
         i = 0
         for word in self.liste[auteur]:
             listeTriage.append(self.liste[auteur][word])
-            i+=1
-        sys.setrecursionlimit(len(listeTriage)*len(listeTriage))
-        self.mergesort(listeTriage)
-        for j in range(int(len(listeTriage)/2)):
-            listeTriage[j], listeTriage[len(listeTriage)-(j+1)]=(listeTriage[len(listeTriage)-(j+1)],listeTriage[j])
-        ngram = listeTriage[n]
+            i += 1
+        sys.setrecursionlimit(len(listeTriage) + 1)
+        self.quicksort(listeTriage, 0, len(listeTriage) - 10)
+        for j in range(int(len(listeTriage) / 2)):
+            listeTriage[j], listeTriage[len(listeTriage) - (j + 1)] = (
+            listeTriage[len(listeTriage) - (j + 1)], listeTriage[j])
+        ngram = []
+        ngram.append(listeTriage[n])
+        if self.ngram > 1:
+            ngram.append(listeTriage[n].startQuicksort())
         return ngram
 
     def analyze(self):
         self.set_aut_dir("TextesPourEtudiants")
         for auteur in self.auteurs:
             frequency = {}
-            listeOeuvres=self.get_aut_files(auteur)
+            listeOeuvres = self.get_aut_files(auteur)
             for oeuvre in listeOeuvres:
                 texte = open(oeuvre, 'r', encoding='utf8')
                 lecture = texte.read().lower()
                 match_pattern = re.findall(r'\b[a-z]{3,50}\b', lecture)
-                frequency=extractionNGramme(self.ngram,match_pattern,frequency)
-            self.liste[auteur]=frequency
-
-
+                frequency = extractionNGramme(self.ngram, match_pattern, frequency)
+            self.liste[auteur] = frequency
 
         """Fait l'analyse des textes fournis, en traitant chaque oeuvre de chaque auteur
 
@@ -487,39 +492,34 @@ class markov():
         #   les mots d'une trÃ¨s longue oeuvre du mÃªme auteur. Ce n'est PAS ce qui vous est demandÃ© ici.
 
         return
-def extractionNGramme(n,match_pattern,frequency):
+
+
+def extractionNGramme(n, match_pattern, frequency):
     if n == 1:
         for word in match_pattern:
-            if frequency.get(word)==None:
-                frequency[word]=objet_unigramme(word)
+            if frequency.get(word) == None:
+                frequency[word] = objet_unigramme(word)
             else:
                 frequency[word].augmenter()
-
-        for word in frequency:
-            pass
-            #print(frequency[word].getResultat())
     else:
-        i=0
+        i = 0
         for word in match_pattern:
-            i+=1
+            i += 1
             key = word
-            for wordAfter in range(n-2):
-                if i+wordAfter < match_pattern.__len__():
-                    key+=(" " + match_pattern[i+wordAfter])
+            for wordAfter in range(n - 2):
+                if i + wordAfter < match_pattern.__len__():
+                    key += (" " + match_pattern[i + wordAfter])
             if key not in frequency:
-                frequency[key]=objet_ngramme(key)
-            if i+n-1 < match_pattern.__len__() :
-                wordSuivant = match_pattern[i+n-1]
+                frequency[key] = objet_ngramme(key)
+            if i + n - 1 < match_pattern.__len__():
+                wordSuivant = match_pattern[i + n - 1]
                 frequency[key].ajouterMot(wordSuivant)
-                #frequency[key].afficher()
     return frequency
 
+
 if __name__ == "__main__":
+    t = markov()
 
-    t= markov()
-    t.ngram=2
-    t.analyze()
-    temp = t.get_nth_element("Balzac",0)
-    temp.afficher()
+    # t.find_author("Hugo_généré.txt")
 
-
+    t.gen_text('Hugo', 14, "test.txt")
