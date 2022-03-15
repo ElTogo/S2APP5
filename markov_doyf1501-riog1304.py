@@ -83,8 +83,8 @@ class objet_ngramme:
     def setFrequence(self, frequence):
         self.frequence = frequence
         return
-
-
+    def getMot(self):
+        return self.mot
     def getFrequence(self):
         return self.frequence
 
@@ -97,32 +97,34 @@ class objet_ngramme:
     def afficher(self):
         print("Le mot " + self.mot + " reveint " + str(self.frequence) + " et précede " + str(self.secondMot.__len__()))
         return
-    def mergesort(self, list):
-        if len(list) > 1:
-            mid = len(list) // 2
-            left_half = list[:mid]
-            right_half = list[mid:]
-
-            self.mergesort(left_half)
-            self.mergesort(right_half)
-
+    def startMergeSort(self):
+        motTrie = []
+        for mot in self.secondMot:
+            motTrie.append(self.secondMot[mot])
+        self.mergesort(motTrie)
+        return motTrie
+    def mergesort(self, liste):
+        if len(liste) > 1:
+            milieux = len(liste) // 2
+            left = liste[:milieux]
+            right = liste[milieux:]
+            self.mergesort(left)
+            self.mergesort(right)
             i, j, k = 0, 0, 0
-            while i < len(left_half) and j < len(right_half):
-                if left_half[i].getFrequence() <= right_half[j].getFrequence():
-                    list[k] = left_half[i]
+            while i < len(left) and j < len(right):
+                if left[i].getFrequence() >= right[j].getFrequence():
+                    liste[k] = left[i]
                     i = i + 1
                 else:
-                    list[k] = right_half[j]
+                    liste[k] = right[j]
                     j = j + 1
                 k = k + 1
-
-            while i < len(left_half):
-                list[k] = left_half[i]
+            while i < len(left):
+                liste[k] = left[i]
                 i = i + 1
                 k = k + 1
-
-            while j < len(right_half):
-                list[k] = right_half[j]
+            while j < len(right):
+                liste[k] = right[j]
                 j = j + 1
                 k = k + 1
 
@@ -399,32 +401,28 @@ class markov():
 
         return
 
-    def mergesort(self, list):
-        if len(list) > 1:
-            mid = len(list) // 2
-            left_half = list[:mid]
-            right_half = list[mid:]
-
-            self.mergesort(left_half)
-            self.mergesort(right_half)
-
+    def mergesort(self, liste):
+        if len(liste) > 1:
+            milieux = len(liste) // 2
+            left = liste[:milieux]
+            right = liste[milieux:]
+            self.mergesort(left)
+            self.mergesort(right)
             i, j, k = 0, 0, 0
-            while i < len(left_half) and j < len(right_half):
-                if left_half[i].getFrequence() <= right_half[j].getFrequence():
-                    list[k] = left_half[i]
+            while i < len(left) and j < len(right):
+                if left[i].getFrequence() >= right[j].getFrequence():
+                    liste[k] = left[i]
                     i = i + 1
                 else:
-                    list[k] = right_half[j]
+                    liste[k] = right[j]
                     j = j + 1
                 k = k + 1
-
-            while i < len(left_half):
-                list[k] = left_half[i]
+            while i < len(left):
+                liste[k] = left[i]
                 i = i + 1
                 k = k + 1
-
-            while j < len(right_half):
-                list[k] = right_half[j]
+            while j < len(right):
+                liste[k] = right[j]
                 j = j + 1
                 k = k + 1
 
@@ -445,9 +443,14 @@ class markov():
             i+=1
         sys.setrecursionlimit(len(listeTriage)*len(listeTriage))
         self.mergesort(listeTriage)
-        for j in range(int(len(listeTriage)/2)):
-            listeTriage[j], listeTriage[len(listeTriage)-(j+1)]=(listeTriage[len(listeTriage)-(j+1)],listeTriage[j])
-        ngram = listeTriage[n]
+        #ngram = listeTriage[n]
+        ngram = []
+        ngram.append(listeTriage[n].getMot())
+        if self.ngram != 1:
+            secondMot = listeTriage[n].startMergeSort()
+            ngram.append([])
+            for mot in secondMot:
+                ngram[1].append(mot.getMot())
         return ngram
 
     def analyze(self):
@@ -520,6 +523,6 @@ if __name__ == "__main__":
     t.ngram=2
     t.analyze()
     temp = t.get_nth_element("Balzac",0)
-    temp.afficher()
+    print(temp)
 
 
