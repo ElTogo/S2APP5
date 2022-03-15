@@ -378,17 +378,17 @@ class markov():
             for i in range(taille - 1):
                 for ngram in prochainsMots:
                     listTemp2[ngram] = prochainsMots[ngram].getFrequence()
-
-                j = list(prochainsMots.keys())
+                j = list(listTemp2.keys())
                 s = list(listTemp2.values())
-
+                print(j)
+                print(s)
                 prochainMot = (random.choices(j, s, k=1))
 
                 print(str(prochainMot[0]))
                 text_Gen.write(str(prochainMot[0]))
-
                 prochainsMots = self.liste[auteur][prochainsMots[prochainMot[0]].getMot()].getSecondMot()
-            print(prochainMot)
+                print(prochainMot)
+                listTemp2.clear()
 
         """AprÃ¨s analyse des textes d'auteurs connus, produire un texte selon des statistiques d'un auteur
 
