@@ -453,6 +453,19 @@ class markov():
                 ngram[1].append(mot.getMot())
         return ngram
 
+        #code alternatif pour avoir la combinaison de mot la plus fréquente
+
+        """listeTriage = []
+        for word  in self.liste[auteur]:
+            for secondWord in self.liste[auteur][word].getSecondMot():
+                secondMot = self.liste[auteur][word].getSecondMot()
+                listeTriage.append(objet_unigramme(str(word + " " + secondWord)))
+                listeTriage[len(listeTriage)-1].setFrequence(secondMot[secondWord].getFrequence())
+        self.mergesort(listeTriage)
+        return listeTriage[n].getMot()"""
+
+
+
     def analyze(self):
         self.set_aut_dir("TextesPourEtudiants")
         for auteur in self.auteurs:
@@ -522,7 +535,7 @@ if __name__ == "__main__":
     t= markov()
     t.ngram=2
     t.analyze()
-    temp = t.get_nth_element("Balzac",0)
+    temp = t.get_nth_element("Balzac",20)
     print(temp)
 
 
