@@ -306,8 +306,8 @@ class markov():
         for auteur in self.auteurs:
             for word in self.liste[auteur]:
                 if word in self.liste[auteur] and word in frequence_inconnu:
-                    sommeAuteur += (self.liste[auteur][word]) * (self.liste[auteur][word])
-                    produitScalaire += self.liste[auteur][word] * frequence_inconnu[word]
+                    sommeAuteur += (self.liste[auteur][word].getFrequence()) * (self.liste[auteur][word].getFrequence())
+                    produitScalaire += self.liste[auteur][word].getFrequence() * frequence_inconnu[word]
                 else:
                     sommeAuteur += 0
                     produitScalaire += 0
