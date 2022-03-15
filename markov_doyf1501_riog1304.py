@@ -287,7 +287,7 @@ class markov():
         # on change les objets pour les freq de chaque mot
         for auteur in self.auteurs:
             for word in self.liste[auteur]:
-                self.liste[auteur][word] = self.liste[auteur][word].getFrequence()
+                self.liste[auteur][word] = self.liste[auteur][word]#.getFrequence()
 
         # Calculs, on commence par calculer la taille des deux vecteurs
 
@@ -338,7 +338,6 @@ class markov():
             listePoids = []
 
             for word in self.liste[auteur]:
-                self.liste[auteur][word].aficher()
                 self.liste[auteur][word] = self.liste[auteur][word].getFrequence()
 
             # print(self.liste["Hugo"])
