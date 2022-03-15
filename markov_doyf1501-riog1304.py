@@ -30,6 +30,7 @@ import string
 import re
 import sys
 import math
+import random
 
 class objet_unigramme:
     """Classe des objet du unigramme. Chaque objet sert à contenir un mot ainsi que sa fréquence utilisé.
@@ -92,15 +93,18 @@ class objet_ngramme:
         self.secondMot[mot].setFrequence(frequence)
         return
 
+    def get2Gramme(self):
+        return self.mot
 
-    def getFrequence(self, mot):
-        return self.secondMot[mot].getFrequence()
+    def getSecondMot (self,mot):
+        return self.secondMot[mot]
 
-    def getSecondMot(self):
-        return self.secondMot
+
+
+
     def afficher(self):
-        print("Le mot " + self.mot + " reveint " + str(self.frequence) + " et précede " + str(self.secondMot.__len__()))
-        return
+
+            print("Les mots " + self.mot + " " + self.secondMot[second].getMot() + " reviennent " + self.secondMot[second].getFrequence())
     def startQuicksort(self):
         liste = []
         for mot in self.secondMot:
@@ -240,7 +244,7 @@ class markov():
         self.keep_ponc = False
         self.rep_aut = os.getcwd()
         self.auteurs = []
-        self.ngram = 1
+        self.ngram = 2
         self.liste = {}
 
         # Au besoin, ajouter votre code d'initialisation de l'objet de type markov lors de sa crÃ©ation
@@ -332,6 +336,67 @@ class markov():
         return resultats
 
     def gen_text(self, auteur, taille, textname):
+        self.analyze()
+        print("--------------jhg------")
+
+        if self.ngram ==1:
+            i =0
+            listeMot = []
+            listePoids = []
+
+            for word in self.liste[auteur]:
+                self.liste[auteur][word].aficher()
+                self.liste[auteur][word] = self.liste[auteur][word].getFrequence()
+
+
+            #print(self.liste["Hugo"])
+
+            listeMot = list(self.liste[auteur].keys())
+
+            listePoids = list(self.liste[auteur].values())
+
+
+            textGen = open(textname,'w')
+
+
+
+            randomizer= (random.choices(listeMot,listePoids,k=taille))
+
+            for word in randomizer:
+                textGen.write(word)
+                textGen.write(" ")
+
+            textGen.close()
+        if self.ngram > 1:
+            self.analyze()
+            listDesMots = []
+            listPoids = []
+            for ngram in self.liste[auteur]:
+                self.liste[auteur][ngram] = self.liste[auteur][ngram].getFrequence()
+            listDesMots = list(self.liste[auteur].keys())
+            listPoids = list(self.liste[auteur].values())
+
+            premierMot = random.choices(listDesMots,listPoids,k=1)
+            mot= str(premierMot)
+            text_Gen = open(textname,'w')
+
+            for word in self.liste[auteur]:
+                secondMot= random.choices(list(self.liste[auteur][word][ngram].getSecondMot(mot)))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         """AprÃ¨s analyse des textes d'auteurs connus, produire un texte selon des statistiques d'un auteur
 
         Args:
@@ -385,7 +450,7 @@ class markov():
             listeTriage.append(self.liste[auteur][word])
             i+=1
         sys.setrecursionlimit(len(listeTriage)+1)
-        self.quicksort(listeTriage,0,len(listeTriage)-1)
+        self.quicksort(listeTriage,0,len(listeTriage)-10)
         for j in range(int(len(listeTriage)/2)):
             listeTriage[j], listeTriage[len(listeTriage)-(j+1)]=(listeTriage[len(listeTriage)-(j+1)],listeTriage[j])
         ngram=[]
@@ -406,92 +471,6 @@ class markov():
                 frequency=extractionNGramme(self.ngram,match_pattern,frequency)
             self.liste[auteur]=frequency
 
-    def TEMPanalyze(self):
-        n=self.ngram
-# auteur 2 Hugo
-        self.liste["Hugo"] = {}
-        self.set_aut_dir("TextesPourEtudiants")
-        listeTeste_hugo = self.get_aut_files("Hugo")
-
-        for i in range(1):
-            hugoTexte = open(listeTeste_hugo[1], 'r')
-            lectureHugo = hugoTexte.read().lower()
-
-            match_pattern = re.findall(r'\b[a-z]{3,50}\b', lectureHugo)
-
-            self.liste["Hugo"]=extractionNGramme(self.ngram,match_pattern,self.liste["Hugo"])
-
-        hugoTexte.close()
-        #print(frequency_mot_hugo)
-
-
-
-
-# auteur 4 Verne
-        self.liste["Verne"] = {}
-        #self.set_aut_dir("TextesPourEtudiants")
-        listeTeste_verne = self.get_aut_files("Verne")
-
-        for i in range(1):
-            verneTexte = open(listeTeste_verne[1], 'r')
-            lecturVerne = verneTexte.read().lower()
-
-            match_pattern = re.findall(r'\b[a-z]{3,50}\b', lecturVerne)
-
-            self.liste["Verne"]=extractionNGramme(self.ngram,match_pattern,self.liste["Verne"])
-
-        verneTexte.close()
-        #print(frequency_mot_verne)
-
-
-# auteur 5 Voltaire
-        self.liste["Voltaire"] = {}
-        #self.set_aut_dir("TextesPourEtudiants")
-        listeTeste_voltaire = self.get_aut_files("Voltaire")
-
-        for i in range(1):
-            voltaireTexte = open(listeTeste_voltaire[1], 'r')
-            lecturVoltaire = voltaireTexte.read().lower()
-
-            match_pattern = re.findall(r'\b[a-z]{3,50}\b', lecturVoltaire)
-
-            self.liste["Voltaire"]=extractionNGramme(self.ngram,match_pattern,self.liste["Verne"])
-
-        voltaireTexte.close()
-        #print(frequency_mot_verne)
-
-# auteur 6 Zola
-        self.liste["Zola"] = {}
-        #self.set_aut_dir("TextesPourEtudiants")
-        listeTeste_zola = self.get_aut_files("Zola")
-
-        for i in range(1):
-            zolaTexte = open(listeTeste_zola[1], 'r')
-            lecturZola = zolaTexte.read().lower()
-
-            match_pattern = re.findall(r'\b[a-z]{3,50}\b', lecturZola)
-
-            self.liste["Zola"]=extractionNGramme(self.ngram,match_pattern,self.liste["Zola"])
-
-        zolaTexte.close()
-        #print(frequency_mot_verne)
-
-# auteur 6 Segur
-        self.liste["Segur"] = {}
-        #self.set_aut_dir("TextesPourEtudiants")
-        listeTeste_segur = self.get_aut_files("Ségur")
-
-        for i in range(1):
-            segurTexte = open(listeTeste_segur[1], 'r')
-            lecturSegur = """segurTexte.read().lower()"""
-
-            match_pattern = re.findall(r'\b[a-z]{3,50}\b', lecturSegur)
-
-            self.liste["Segur"] = extractionNGramme(self.ngram,match_pattern, self.liste["Segur"])
-
-        segurTexte.close()
-
-        #print(frequency_mot_segur)
 
 
         """Fait l'analyse des textes fournis, en traitant chaque oeuvre de chaque auteur
@@ -540,11 +519,13 @@ def extractionNGramme(n,match_pattern,frequency):
     return frequency
 
 if __name__ == "__main__":
-    
-    t= markov()
 
-    t.find_author("Hugo_généré.txt")
-   
+    t= markov()
+    print(t.get_nth_element("Balzac",12))
+    #t.find_author("Hugo_généré.txt")
+    print("---------------")
+    t.gen_text('Hugo',14,"test.txt")
+
 
 
     """temp[0].afficher()
