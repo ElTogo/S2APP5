@@ -529,10 +529,7 @@ def extractionNGramme(n, match_pattern, frequency):
 
 if __name__ == "__main__":
     t = markov()
-    #t.ngram=2
-    #t.analyze()
-    #temp = t.get_nth_element("Balzac",20)
-    #print(temp)
+    t.find_author("Hugo_généré.txt")
 
     # t.find_author("Hugo_généré.txt")
 
