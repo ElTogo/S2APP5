@@ -280,8 +280,6 @@ class markov():
         for word in frequence_inconnu:
             frequence_inconnu[word] = frequence_inconnu[word].getFrequence()
 
-        print(frequence_inconnu)
-
         # On lit tous les textes de tous les auteurs, on en fait des dict dans une liste
         self.analyze()
         # on change les objets pour les freq de chaque mot
@@ -302,21 +300,25 @@ class markov():
             sommeInconnu += (frequence_inconnu[word]) * (frequence_inconnu[word])
 
         tailleInconnu = math.sqrt(sommeInconnu)
-
+        resultats = []
         for auteur in self.auteurs:
+            sommeAuteur=0
+            produitScalaire=0
             for word in self.liste[auteur]:
                 if word in self.liste[auteur] and word in frequence_inconnu:
-                    sommeAuteur += (self.liste[auteur][word]) * (self.liste[auteur][word])
-                    produitScalaire += self.liste[auteur][word] * frequence_inconnu[word]
+                    sommeAuteur += (self.liste[auteur][word].getFrequence()) * (self.liste[auteur][word].getFrequence())
+                    produitScalaire += self.liste[auteur][word].getFrequence() * frequence_inconnu[word]
                 else:
                     sommeAuteur += 0
                     produitScalaire += 0
             tailleAuteur = math.sqrt(sommeAuteur)
             indiceRessemblance = produitScalaire / (tailleAuteur * tailleInconnu)
-            # resultats = [(auteur, indiceRessemblance)]
-            print(auteur, "-->", indiceRessemblance)
 
-        resultats = [("balzac", 0.1234), ("voltaire", 0.1123)]  # Exemple du format des sorties
+            resultats.append([(auteur, indiceRessemblance)])
+
+
+
+        #resultats = [("balzac", 0.1234), ("voltaire", 0.1123)]  # Exemple du format des sorties
 
         # Ajouter votre code pour dÃ©terminer la proximitÃ© du fichier passÃ© en paramÃ¨tre avec chacun des auteurs
         # Retourner la liste des auteurs, chacun avec sa proximitÃ© au fichier inconnu
@@ -468,6 +470,7 @@ class markov():
 
 
     def analyze(self):
+        self.auteurs.clear()
         self.set_aut_dir("TextesPourEtudiants")
         for auteur in self.auteurs:
             frequency = {}
